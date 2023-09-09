@@ -119,7 +119,7 @@ class ValidateCampaignUpdate(Serializer):
             campaign.campaign_timezone = selected_timezone[0]
             campaign.save()
             serializer = SingleCampaignSerializer(instance=campaign)
-            return Response(serializer.data)
+            return Response(serializer.data), campaign
 
 
 class ValidateNewLeadSerializer(Serializer):

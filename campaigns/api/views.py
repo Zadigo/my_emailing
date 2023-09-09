@@ -1,11 +1,14 @@
+import pandas
+import redis
 from django.core.validators import FileExtensionValidator
 from django.utils.crypto import get_random_string
 from rest_framework.decorators import api_view
-from rest_framework.response import Response
-import pandas
-from campaigns import models
-from campaigns.api import serializers
 from rest_framework.exceptions import NotAcceptable
+from rest_framework.response import Response
+
+from campaigns import models
+from campaigns.api import connections
+from campaigns.api import serializers
 
 
 @api_view(http_method_names=['get'])
@@ -36,7 +39,19 @@ def update_campaign_view(request, campaign_id, **kwargs):
     """Updates a current campaign"""
     serializer = serializers.ValidateCampaignUpdate(data=request.POST)
     serializer.is_valid(raise_exception=True)
-    return serializer.update(campaign_id)
+
+    response, campaign = serializer.update(campaign_id)
+
+    # If the campaign is activated, we need to
+    # is_active = serializer.validated_data.get('active')
+    # connection = connections.get_redis_connection()
+    # if is_active:
+    #     if connection:
+    #         connection.hset(campaign.campaign_id, '', {})
+    # else:
+    #     if connection:
+    #         connection.hdel(campaign.campaign_id)
+    return response
 
 
 @api_view(http_method_names=['get'])
