@@ -2,6 +2,7 @@ import { createApp } from 'vue'
 import { loadFonts } from './plugins'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { createPinia } from 'pinia'
+import { createAxios } from './plugins/axios'
 // import { createLocalStorage, createVueSession } from './plugins/vue-storages'
 
 import App from './App.vue'
@@ -19,12 +20,13 @@ loadFonts()
 
 const app = createApp(App)
 const pinia = createPinia()
-
+const axios = createAxios()
 // const session = createVueSession()
 // const localstorage = createLocalStorage()
 
 app.use(pinia)
 app.use(router)
+app.use(axios)
 // app.use(session)
 // app.use(localstorage)
 app.component('FontAwesomeIcon', FontAwesomeIcon)

@@ -24,6 +24,7 @@
 <script>
 import _ from 'lodash'
 
+import { mapState } from 'pinia'
 import { useCampaigns } from '../../store'
 
 import BaseButton from '@/layouts/bootstrap/buttons/BaseButton.vue'
@@ -46,6 +47,9 @@ export default {
     return {
       
     }
+  },
+  computed: {
+    ...mapState(useCampaigns, { sequences: 'currentCampaignSequences' })
   },
   methods: {
     async handleNewSequence () {

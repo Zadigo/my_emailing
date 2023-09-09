@@ -12,8 +12,12 @@
       
       <template #body>
         <div class="list-group">
-          <div v-for="lead in leads" :key="lead.id" class="list-group-item p-3">
-            {{ lead.email }}
+          <div v-for="lead in leads" :key="lead.id" class="list-group-item list-group-item-action p-3 d-flex justify-content-around gap-3 align-items-center text-left">
+            <span>{{ lead.email }}</span>
+            <span v-if="lead.reviewed" class="badge text-bg-success">Reviewed</span>
+            <router-link v-else-if="!lead.reviewed" :to="{ name: 'review_view', query: {id: lead.id } }" class="badge text-bg-light">To review</router-link>
+            <span>{{ lead.firstname }}</span>
+            <span>{{ lead.lastname }}</span>
           </div>
         </div>
       </template>
@@ -46,7 +50,10 @@ export default {
     }
   },
   computed: {
-    ...mapState(useCampaigns, { leads: 'currentCampaignLeads' }),
+    ...mapState(useCampaigns, { 
+      campaign: 'currentCampaign',
+      leads: 'currentCampaignLeads'
+    }),
     searchedLeads () {
       if (!this.search) {
         return this.leads
@@ -85,24 +92,8 @@ export default {
   methods: {
     async getLeads () {
       try {
-        this.store.currentCampaignLeads = [
-          // {
-          //   id: 1,
-          //   firstname: 'Julie',
-          //   lastname: 'Paul',
-          //   email: 'julie@gmail.com',
-          //   linkedin: null,
-          //   reviewed: true
-          // },
-          // {
-          //   id: 1,
-          //   firstname: 'Pauline',
-          //   lastname: 'Françoise',
-          //   email: 'pauline@gmail.com',
-          //   linkedin: null,
-          //   reviewed: false
-          // }
-        ]
+        const response = await this.$http.get(`/campaigns/${this.campaign.campaign_id}/leads`)
+        this.store.currentCampaignLeads = response.data
       } catch (e) {
         console.log(e)
       }

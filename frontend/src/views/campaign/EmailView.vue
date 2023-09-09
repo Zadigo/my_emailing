@@ -16,16 +16,16 @@
 </template>
 
 <script>
+import { mapActions, mapState } from 'pinia'
+import { useCampaigns } from '../../store'
+
 import BaseInput from '@/layouts/bootstrap/BaseInput.vue'
 import BaseCard from '@/layouts/bootstrap/cards/BaseCard.vue'
-import { mapActions, mapState } from 'pinia';
-import { useCampaigns } from '../../store';
+
 export default {
   components: {
     BaseCard,
     BaseInput
-  },
-  setup () {
   },
   data () {
     return {

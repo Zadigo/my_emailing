@@ -38,7 +38,7 @@ export default {
     }
   },
   created () {
-    this.numberOfDays = this.sequence.days
+    this.numberOfDays = this.sequence.number_of_days
   },
   methods: {
     async handleUpdateDays () {

@@ -5,12 +5,12 @@
         <base-card class="shadow-sm">
           <template #body>
             <div v-if="leadsCount > 0" class="list-group">
-              <div v-for="lead in leads" :key="lead.id" class="list-group-item p-3 d-flex justify-content-between align-items-center">
+              <a v-for="lead in leads" :key="lead.id" href class="list-group-item list-group-item-action p-3 d-flex justify-content-between align-items-center" @click.prevent="handlePreviewEmail(lead)">
                 <span>{{ lead.email }}</span>
                 <base-button id="cta-review-lead" size="sm" color="secondary" rounded @click="handleReviewLead(lead)">
                   Review
                 </base-button>
-              </div>
+              </a>
             </div>
 
             <div v-else class="text-center">
@@ -26,36 +26,46 @@
       </div>
       
       <div class="col-6">
-        <base-card class="shadow-sm">
-          <template #body>
-            something
-          </template>
-        </base-card>
+        <sequence-block v-for="(sequence, i) in sequences" :key="sequence.sequene_id" :sequence="sequence" :class="{ 'mt-5': i >= 1 }" show-explicit-result />
       </div>
     </div>
   </section>
 </template>
 
 <script>
+import { useCampaigns } from '../../store'
+import { mapState } from 'pinia'
+import { provide, ref } from 'vue'
+
 import BaseButton from '@/layouts/bootstrap/buttons/BaseButton.vue'
 import BaseCard from '@/layouts/bootstrap/cards/BaseCard.vue'
-import { useCampaigns } from '../../store'
-import { mapState } from 'pinia';
+import SequenceBlock from '@/components/SequenceBlock.vue'
+
 export default {
   components: {
     BaseButton,
-    BaseCard
+    BaseCard,
+    SequenceBlock
   },
   setup () {
     const store = useCampaigns()
+    const previewEmail = ref(true)
+    const previewForLead = ref({})
+
+    provide('previewEmail', previewEmail)
+    provide('previewForLead', previewForLead)
+
     return {
+      previewEmail,
+      previewForLead,
       store
     }
   },
   computed: {
     ...mapState(useCampaigns, { 
       leads: 'unreviewedLeads', 
-      leadsCount: 'unreviewedLeadsCount'
+      leadsCount: 'unreviewedLeadsCount',
+      sequences: 'currentCampaignSequences'
     })
   },
   methods: {
@@ -64,6 +74,14 @@ export default {
         lead.reviewed = true
       } catch (e) {
         console.log(e)
+      }
+    },
+    handlePreviewEmail (lead) {
+      this.previewEmail = !this.previewEmail
+      if (this.previewEmail) {
+        this.previewForLead = lead
+      } else {
+        this.previewForLead = {}
       }
     }
   }

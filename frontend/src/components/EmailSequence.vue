@@ -21,10 +21,6 @@ export default {
       required: true
     }
   },
-  data () {
-    return {
-    }
-  },
   methods: {
     showEmailComponent () {
       this.$router.push({ name: 'email_view', params: { seq: this.sequence.sequence_id } })

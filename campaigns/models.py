@@ -78,6 +78,7 @@ class Lead(models.Model):
         null=True
     )
     completed = models.BooleanField(default=False)
+    reviewed = models.BooleanField(default=False)
     completion_date = models.DateTimeField(blank=True, null=True)
     modified_on = models.DateTimeField(auto_now=True)
     created_on = models.DateTimeField(auto_now_add=True)

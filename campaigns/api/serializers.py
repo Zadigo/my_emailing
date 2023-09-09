@@ -26,6 +26,7 @@ class LeadSerializer(Serializer):
     full_name = fields.CharField()
     email = fields.EmailField()
     completed = fields.BooleanField()
+    reviewed = fields.BooleanField()
     completion_date = fields.DateTimeField()
     modified_on = fields.DateTimeField()
     created_on = fields.DateTimeField()
@@ -49,7 +50,7 @@ class LeadSerializer(Serializer):
             campaign = Campaign.objects.get(campaign_id=campaign_id)
         except:
             raise NotFound(detail='Campaign not found')
-        else:        
+        else:
             lead = campaign.lead_set.filter(id=lead_id)
             if not lead.exists():
                 raise NotFound(detail='Lead not found')
@@ -62,6 +63,7 @@ class CampaignSerializer(Serializer):
     campaign_id = fields.CharField()
     name = fields.CharField()
     number_of_leads = fields.IntegerField()
+    sequence_set = SequenceSerializer(many=True)
     modified_on = fields.DateTimeField()
     created_on = fields.DateTimeField()
     get_vue_absolute_url = fields.CharField()
@@ -135,5 +137,5 @@ class ValidateUpdateLeadSerializer(Serializer):
     lastname = fields.CharField()
     full_name = fields.CharField()
     email = fields.EmailField()
+    reviewed = fields.BooleanField(default=False)
     extra_fields = fields.JSONField()
-    

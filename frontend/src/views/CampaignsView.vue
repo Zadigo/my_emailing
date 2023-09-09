@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="row">
-      <div class="col-10 offset-md-1">
+      <div class="col-8 offset-md-2 py-3">
         <!-- Campaigns -->
         <base-card class="shadow-sm">
           <template #header>
@@ -61,7 +61,18 @@ export default {
   computed: {
     ...mapState(useCampaigns, ['hasCampaigns'])
   },
+  created () {
+    this.getCampaigns()
+  },
   methods: {
+    async getCampaigns () {
+      try {
+        const response = await this.$http.get('/campaigns')
+        this.store.campaigns = response.data
+      } catch (e) {
+        console.error(e)
+      }
+    },
     async handleNewCampaign () {
       try {
         this.$router.push({ name: 'new_campaign_view', params: { id: 'camp_2' } })

@@ -4,31 +4,14 @@ import _ from 'lodash'
 
 const useCampaigns = defineStore('campaigns', {
   state: () => ({
-    campaigns: [
-      // {
-      //   id: 1,
-      //   campaign_id: 'cam_1235',
-      //   name: 'Some campaign',
-      //   sender: null,
-      //   sequences: [
-      //     {
-      //       id: 1,
-      //       sequence_id: 'seq_12345',
-      //       email_object: 'Some simple object',
-      //       text: "Some text for me",
-      //       html_text: "Some html text for you",
-      //       days: 3
-      //     }
-      //   ]
-      // }
-    ],
+    campaigns: [],
     currentCampaign: {},
     currentCampaignLeads: [],
     currentSequence: {}
   }),
   getters: {
     currentCampaignSequences () {
-      return this.currentCampaign.sequences || []
+      return this.currentCampaign.sequence_set || []
     },
     unreviewedLeads () {
       return _.filter(this.currentCampaignLeads, ['reviewed', false])
@@ -43,7 +26,7 @@ const useCampaigns = defineStore('campaigns', {
     },
     hasCurrentCampaign () {
       // Checks if currentCampaign is populated
-      if (!this.hasCampaign) {
+      if (!this.hasCampaigns) {
         return false
       }
 

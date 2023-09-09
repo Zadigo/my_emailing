@@ -28,6 +28,11 @@ const router = createRouter({
                             component: loadView('campaign/CampaignView')
                         },
                         {
+                            path: 'settings',
+                            name: 'settings_view',
+                            component: loadView('campaign/SettingsView')
+                        },
+                        {
                             path: ':seq/email',
                             name: 'email_view',
                             component: loadView('campaign/EmailView')
