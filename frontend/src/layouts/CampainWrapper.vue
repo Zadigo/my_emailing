@@ -18,8 +18,8 @@
 </template>
 
 <script>
-import { mapActions } from 'pinia';
-import { useCampaigns } from '../store';
+import { mapState, mapActions } from 'pinia'
+import { useCampaigns } from '../store'
 
 export default {
   data () {
@@ -40,11 +40,18 @@ export default {
       ]
     }
   },
+ computed: {
+    ...mapState(useCampaigns, { sequences: 'currentCampaignSequences' }),
+    ...mapState(useCampaigns, ['hasCurrentCampaign'])
+  },
   beforeMount () {
-    this.getViewedCampaign(this.$route.params.id)
+    this.getCurrentCampaign(this.$route.params.id)
+    if (!this.hasCurrentCampaign) {
+      this.$router.push({ name: 'home_view' })
+    }
   },
   methods: {
-    ...mapActions(useCampaigns, ['getViewedCampaign'])
+    ...mapActions(useCampaigns, ['getCurrentCampaign'])
   }
 }
 </script>

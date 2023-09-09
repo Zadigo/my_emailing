@@ -1,5 +1,6 @@
-import _ from 'lodash'
 import { defineStore } from 'pinia'
+
+import _ from 'lodash'
 
 const useCampaigns = defineStore('campaigns', {
   state: () => ({
@@ -34,17 +35,33 @@ const useCampaigns = defineStore('campaigns', {
     },
     unreviewedLeadsCount () {
       return this.unreviewedLeads.length
+    },
+    hasCampaigns () {
+      // Checks there are campaigns present
+      // for the given team
+      return this.campaigns.length > 0
+    },
+    hasCurrentCampaign () {
+      // Checks if currentCampaign is populated
+      if (!this.hasCampaign) {
+        return false
+      }
+
+      if (Object.keys(this.currentCampaign).length > 0) {
+        return true
+      } else {
+        return false
+      }
     }
   },
   actions: {
-    getCurrentCampaign (campaign_id) {
-      this.currentCampaign = _.find(this.campaigns, ['campaign_id', campaign_id]) || {}
-    },
     getCurrentSequence (sequenceId) {
       this.currentSequence = _.find(this.currentCampaignSequences, ['sequence_id', sequenceId]) || {}
     },
-    getViewedCampaign (id) {
-      this.currentCampaign = _.find(this.campaigns, ['campaign_id', id])
+    getCurrentCampaign (id) {
+      // Gets the currently viewed campaign by using
+      // the ID from the url
+      this.currentCampaign = _.find(this.campaigns, ['campaign_id', id]) || {}
     }
   }
 })

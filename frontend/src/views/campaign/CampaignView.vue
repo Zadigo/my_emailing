@@ -23,11 +23,13 @@
 
 <script>
 import _ from 'lodash'
-import BaseButton from '@/layouts/bootstrap/buttons/BaseButton.vue'
-import SequenceBlock from '@/components/SequenceBlock.vue'
-import BaseCard from '@/layouts/bootstrap/cards/BaseCard.vue'
+
 import { useCampaigns } from '../../store'
-import { mapState } from 'pinia'
+
+import BaseButton from '@/layouts/bootstrap/buttons/BaseButton.vue'
+import BaseCard from '@/layouts/bootstrap/cards/BaseCard.vue'
+import SequenceBlock from '@/components/SequenceBlock.vue'
+
 export default {
   components: {
     BaseCard,
@@ -44,12 +46,6 @@ export default {
     return {
       
     }
-  },
-  computed: {
-    ...mapState(useCampaigns, {sequences: 'currentCampaignSequences' })
-  },
-  beforeMount () {
-    this.store.getViewedCampaign(this.$route.params.id)
   },
   methods: {
     async handleNewSequence () {
