@@ -1,13 +1,11 @@
 <template>
-  <div id="emailing">
-    <base-card id="email-sequence" class="shadow-sm" @click="showEmailComponent">
-      <template #body>
-        Email : <span class="badge text-bg-light">
-          {{ item.email_object }}
-        </span>
-      </template>
-    </base-card>
-  </div>
+  <base-card id="email-sequence" class="shadow-sm" @click="showEmailComponent">
+    <template #body>
+      Email : <span class="badge text-bg-light">
+        {{ sequence.email_object }}
+      </span>
+    </template>
+  </base-card>
 </template>
 
 <script>
@@ -18,11 +16,9 @@ export default {
     BaseCard
   },
   props: {
-    item: {
-      type: Object
-    },
     sequence: {
-      type: Object
+      type: Object,
+      required: true
     }
   },
   data () {

@@ -86,22 +86,22 @@ export default {
     async getLeads () {
       try {
         this.store.currentCampaignLeads = [
-          {
-            id: 1,
-            firstname: 'Julie',
-            lastname: 'Paul',
-            email: 'julie@gmail.com',
-            linkedin: null,
-            reviewed: true
-          },
-          {
-            id: 1,
-            firstname: 'Pauline',
-            lastname: 'Françoise',
-            email: 'pauline@gmail.com',
-            linkedin: null,
-            reviewed: false
-          }
+          // {
+          //   id: 1,
+          //   firstname: 'Julie',
+          //   lastname: 'Paul',
+          //   email: 'julie@gmail.com',
+          //   linkedin: null,
+          //   reviewed: true
+          // },
+          // {
+          //   id: 1,
+          //   firstname: 'Pauline',
+          //   lastname: 'Françoise',
+          //   email: 'pauline@gmail.com',
+          //   linkedin: null,
+          //   reviewed: false
+          // }
         ]
       } catch (e) {
         console.log(e)

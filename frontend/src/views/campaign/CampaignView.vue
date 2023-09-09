@@ -1,6 +1,7 @@
 <template>
   <section id="campaign">
     <div class="text-center mb-5">
+      <!-- Start -->
       <base-card id="sequence" class="shadow-sm">
         <template #body>
           Start
@@ -8,12 +9,10 @@
       </base-card>
     </div>
 
-    <div v-for="(sequence, i) in sequences" :key="i" :class="{ 'mt-5': i >= 1 }" class="text-center">
-      <template v-for="(item, y) in sequence.items" :key="y">
-        <component :is="item.component" :class="{ 'mt-2': y >= 1 }" :sequence="sequence" :item="item" />
-      </template>
-    </div>
+    <!-- Sequence -->
+    <sequence-block v-for="(sequence, i) in sequences" :key="sequence.sequence_id" :sequence="sequence" :class="{ 'mt-5': i >= 1 }" />
 
+    <!-- Add -->
     <div class="col-12 d-flex justify-content-center mt-5">
       <base-button color="primary" rounded @click="handleNewSequence">
         Add
@@ -25,19 +24,15 @@
 <script>
 import _ from 'lodash'
 import BaseButton from '@/layouts/bootstrap/buttons/BaseButton.vue'
-// import BaseCheckbox from '@/layouts/bootstrap/BaseCheckbox.vue'
+import SequenceBlock from '@/components/SequenceBlock.vue'
 import BaseCard from '@/layouts/bootstrap/cards/BaseCard.vue'
-import EmailSequence from '@/components/EmailSequence.vue'
-import DateSequence from '@/components/DateSequence.vue'
 import { useCampaigns } from '../../store'
 import { mapState } from 'pinia'
 export default {
   components: {
     BaseCard,
     BaseButton,
-    EmailSequence,
-    DateSequence,
-    // BaseCheckbox
+    SequenceBlock
   },
   setup () {
     const store = useCampaigns()
@@ -62,16 +57,11 @@ export default {
         const lastItem = _.last(this.sequences)
         this.store.currentCampaign.sequences.push({
           id: lastItem.id + 1,
-          items: [
-            {
-              email_object: 'Some simple object',
-              component: 'email-sequence'
-            },
-            {
-              days: 5,
-              component: 'date-sequence'
-            }
-          ]
+          sequence_id: 'seq_12345545',
+          email_object: 'Some simple object',
+          text: "Some text for me",
+          html_text: "Some html text for you",
+          days: 3
         })
       } catch (e) {
         console.log(e)

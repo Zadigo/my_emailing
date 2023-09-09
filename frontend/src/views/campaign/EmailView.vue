@@ -38,14 +38,15 @@ export default {
     }
   },
   mounted () {
+    this.getCurrentCampaign(this.$route.params.id)
     this.getCurrentSequence(this.$route.params.seq)
-    this.email.email_object = this.sequenceEmail.email_object
-    this.email.text = this.sequenceEmail.text
-    this.email.html_text = this.sequenceEmail.html_text
+    this.email.email_object = this.currentSequence.email_object
+    this.email.text = this.currentSequence.text
+    this.email.html_text = this.currentSequence.html_text
   },
   methods: {
-    ...mapState(useCampaigns, ['sequenceEmail']),
-    ...mapActions(useCampaigns, ['getCurrentSequence'])
+    ...mapState(useCampaigns, ['currentSequence']),
+    ...mapActions(useCampaigns, ['getCurrentCampaign', 'getCurrentSequence'])
   }
 }
 </script>

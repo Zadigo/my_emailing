@@ -1,12 +1,15 @@
 <template>
-  <base-card id="sequence" class="shadow-sm">
+  <base-card id="date-sequence" class="shadow-sm">
     <template #body>
       <div class="d-flex justify-content-between align-items-center">
         <div class="d-flex flex-column align-items-start">
           <span class="p-2">Wait for {{ numberOfDays }} days</span>
           <base-input id="days" v-model="numberOfDays" type="number" min="1" max="365" class="p-2" />
         </div>
-        <base-button size="sm" rounded @click="handleDeleteSequence">Delete</base-button>
+
+        <base-button size="sm" rounded @click="handleDeleteSequence">
+          Delete
+        </base-button>
       </div>
     </template>
   </base-card>
@@ -24,11 +27,9 @@ export default {
     BaseInput
   },
   props: {
-    item: {
-      type: Object
-    },
     sequence: {
-      type: Object
+      type: Object,
+      required: true
     }
   },
   data () {
@@ -37,9 +38,17 @@ export default {
     }
   },
   created () {
-    this.numberOfDays = this.item.days
+    this.numberOfDays = this.sequence.days
   },
   methods: {
+    async handleUpdateDays () {
+      try {
+        this.sequence.sequence_id
+        // Pass
+      } catch (e) {
+        console.log(e)
+      }
+    },
     async handleDeleteSequence () {
       try {
         this.sequence.sequence_id
