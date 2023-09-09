@@ -2,6 +2,7 @@
   <div class="container">
     <div class="row">
       <div class="col-10 offset-md-1">
+        <!-- Campaigns -->
         <base-card class="shadow-sm">
           <template #header>
             <div class="d-flex justify-content-end">
@@ -13,6 +14,7 @@
           
           <template #body>
             <div v-if="hasCampaigns" class="list-group">
+              <!-- Campaign -->
               <router-link v-for="campaign in store.campaigns" :key="campaign.id" :to="{ name: 'campaign_view', params: { id: campaign.campaign_id } }" class="list-group-item list-group-item-action p-3 d-flex justify-content-left align-items-center">
                 <base-checkbox id="start-campaign" label="" :is-switch="true" />
                 <p class="ms-2 m-0">{{ campaign.name }}</p>
@@ -65,22 +67,17 @@ export default {
         this.$router.push({ name: 'new_campaign_view', params: { id: 'camp_2' } })
         this.store.campaigns.push({
           id: 2,
-          campaign_id: 'cam_345645',
-          name: 'Some campaign 2',
+          campaign_id: 'cam_123456',
+          name: 'Some campaign n°2',
+          sender: null,
           sequences: [
             {
               id: 1,
-              sequence_id: 'seq_45456',
-              items: [
-                {
-                  email_object: 'Another object',
-                  component: 'email-sequence'
-                },
-                {
-                  days: 3,
-                  component: 'date-sequence'
-                }
-              ]
+              sequence_id: 'seq_12345',
+              email_object: 'Some simple object',
+              text: "Some text for me",
+              html_text: "Some html text for you",
+              days: 3
             }
           ]
         })
