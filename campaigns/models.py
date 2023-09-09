@@ -1,11 +1,14 @@
 import datetime
-from django.utils.crypto import get_random_string
+
+import pytz
 from django.db import models
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from django.utils import timezone
+from django.utils.crypto import get_random_string
+from campaigns import validators
 from campaigns.choices import TimeZoneChoices
-import pytz
+
 
 class Sequence(models.Model):
     campaign = models.ForeignKey(
@@ -13,13 +16,14 @@ class Sequence(models.Model):
         on_delete=models.CASCADE
     )
     sequence_id = models.CharField(
-        max_length=50,
+        max_length=100,
+        validators=[validators.custom_id_validator],
         blank=True,
         null=True
     )
     number_of_days = models.PositiveIntegerField(
         default=1,
-        validators=[],
+        validators=[validators.waiting_days_validator],
         help_text='Number of days before sending the email'
     )
     email_object = models.CharField(
@@ -52,6 +56,12 @@ class Lead(models.Model):
     campaign = models.ForeignKey(
         'Campaign',
         on_delete=models.CASCADE
+    )
+    lead_id = models.CharField(
+        max_length=100,
+        validators=[validators.custom_id_validator],
+        blank=True,
+        null=True
     )
     firstname = models.CharField(
         max_length=100,
@@ -93,11 +103,13 @@ class Campaign(models.Model):
     team = None
     campaign_id = models.CharField(
         max_length=50,
+        validators=[validators.custom_id_validator],
         blank=True,
         null=True
     )
     campaign_timezone = models.CharField(
         max_length=100,
+        validators=[],
         default=TimeZoneChoices.choice(),
         choices=TimeZoneChoices.choices()
     )
@@ -122,7 +134,6 @@ class Campaign(models.Model):
 
     def clean(self):
         if self.active:
-            print(self.start_date)
             self.start_date = timezone.make_aware(
                 datetime.datetime.now(),
                 pytz.timezone(self.campaign_timezone)
@@ -138,10 +149,9 @@ def create_campaign_id(instance, created, **kwargs):
             instance.save()
 
 
-@receiver(post_save, sender=Sequence)
-def create_sequence_id(instance, created, **kwargs):
-    if created:
-        if instance.campaign_id is None:
-            secret = get_random_string(length=8)
-            instance.campaign_id = f'seq_{secret}'
-            instance.save()
+@receiver(pre_save, sender=Sequence)
+def create_sequence_id(instance, **kwargs):
+    if instance.sequence_id is None:
+        secret = get_random_string(length=8)
+        instance.sequence_id = f'seq_{secret}'
+        instance.save()

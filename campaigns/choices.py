@@ -11,5 +11,8 @@ class TimeZoneChoices:
         return items
 
     @classmethod
-    def choice(cls):
+    def choice(cls, value=None):
+        if value is not None:
+            result = list(filter(lambda x: value in x, cls.choices()))
+            return result[0]
         return cls.choices()[0]

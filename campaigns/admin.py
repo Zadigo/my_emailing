@@ -8,7 +8,7 @@ class CampaignAdmin(admin.ModelAdmin):
 
 
 class SequenceAdmin(admin.ModelAdmin):
-    list_display = ['sequence_id']
+    list_display = ['sequence_id', 'number_of_days']
 
 
 class LeadAdmin(admin.ModelAdmin):
