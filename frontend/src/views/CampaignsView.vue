@@ -65,7 +65,7 @@ export default {
         this.$router.push({ name: 'new_campaign_view', params: { id: 'camp_2' } })
         this.store.campaigns.push({
           id: 2,
-          campaign_id: 'cam_1235',
+          campaign_id: 'cam_345645',
           name: 'Some campaign 2',
           sequences: [
             {
