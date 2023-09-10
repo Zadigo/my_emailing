@@ -7,7 +7,7 @@
           <template #header>
             <div class="d-flex justify-content-end">
               <base-button id="cta-new-campaign" :shadow-none="true" color="primary" rounded @click="handleNewCampaign">
-                Create new campaign
+                <font-awesome-icon :icon="['fas', 'plus']" class="me-2" />Create new campaign
               </base-button>
             </div>
           </template>
@@ -15,14 +15,18 @@
           <template #body>
             <div v-if="hasCampaigns" class="list-group">
               <!-- Campaign -->
-              <router-link v-for="campaign in store.campaigns" :key="campaign.id" :to="{ name: 'campaign_view', params: { id: campaign.campaign_id } }" class="list-group-item list-group-item-action p-3 d-flex justify-content-left align-items-center">
-                <base-checkbox id="start-campaign" label="" :is-switch="true" />
-                <p class="ms-2 m-0">{{ campaign.name }}</p>
+              <a v-for="(campaign, i) in store.campaigns" :key="campaign.id" class="list-group-item list-group-item-action p-3 d-flex justify-content-between align-items-center" href @click.prevent>
+                <div class="d-flex justify-content-left gap-2">
+                  <base-checkbox :id="`campaign-${i}`" v-model="campaign.active" label="" is-switch />
+                  <router-link :to="{ name: 'campaign_view', params: { id: campaign.campaign_id } }" class="ms-2 m-0 link-underline-primary">
+                    {{ campaign.name }}
+                  </router-link>
+                </div>
 
-                <base-button id="more" color="secondary" size="sm" rounded>
-                  More
+                <base-button id="more" color="white" size="sm" floating>
+                  <font-awesome-icon :icon="['fas', 'ellipsis-vertical']" />
                 </base-button>
-              </router-link>
+              </a>
             </div>
             
             <div v-else class="text-center">
@@ -59,13 +63,23 @@ export default {
     }
   },
   computed: {
-    ...mapState(useCampaigns, ['hasCampaigns'])
+    ...mapState(useCampaigns, ['hasCampaigns']),
+    campaignActive: {
+      get () {
+        return true
+      },
+      set (value) {
+        console.log(value)
+        // Do something
+      }
+    }
   },
   created () {
     this.getCampaigns()
   },
   methods: {
     async getCampaigns () {
+      // Gets all the campaigns for the current team
       try {
         const response = await this.$http.get('/campaigns')
         this.store.campaigns = response.data
@@ -74,24 +88,12 @@ export default {
       }
     },
     async handleNewCampaign () {
+      // Creates a new campaign
       try {
-        this.$router.push({ name: 'new_campaign_view', params: { id: 'camp_2' } })
-        this.store.campaigns.push({
-          id: 2,
-          campaign_id: 'cam_123456',
-          name: 'Some campaign n°2',
-          sender: null,
-          sequences: [
-            {
-              id: 1,
-              sequence_id: 'seq_12345',
-              email_object: 'Some simple object',
-              text: "Some text for me",
-              html_text: "Some html text for you",
-              days: 3
-            }
-          ]
-        })
+        const response = await this.$http.post('/campaigns/new')
+        const campaign = response.data
+        this.store.currentCampaign = campaign
+        this.$router.push({ name: 'new_campaign_view', params: { id: campaign.campaign_id } })
       } catch (e) {
         console.error(e)
       }

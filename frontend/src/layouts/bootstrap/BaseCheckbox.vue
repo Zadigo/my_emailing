@@ -43,6 +43,9 @@ export default {
   emits: {
     'update:modelValue' () {
       return true
+    },
+    'update:model-value' () {
+      return true
     }
   },
   setup () {

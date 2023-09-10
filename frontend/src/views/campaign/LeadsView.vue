@@ -1,6 +1,6 @@
 <template>
   <section id="leads">
-    <base-card class="shadow-sm">
+    <base-card v-if="hasLeads" class="shadow-sm">
       <template #header>
         <div class="d-flex justify-content-between align-items-center">
           <base-input id="search" v-model="search" placeholder="Email, firstname, lastname..." class="w-50 p-2" />
@@ -20,6 +20,13 @@
             <span>{{ lead.lastname }}</span>
           </div>
         </div>
+      </template>
+    </base-card>
+
+    <base-card v-else class="shadow-sm">
+      <template #body>
+        <h2 class="h4">Choose how to import your leads</h2>
+        <p class="fw-light">You can perform several different imports in the same campaign</p>
       </template>
     </base-card>
   </section>
@@ -54,6 +61,7 @@ export default {
       campaign: 'currentCampaign',
       leads: 'currentCampaignLeads'
     }),
+    ...mapState(useCampaigns, ['hasLeads']),
     searchedLeads () {
       if (!this.search) {
         return this.leads
@@ -86,7 +94,14 @@ export default {
       }
     }
   },
-  created () {
+  mounted () {
+    // if (this.store.hasCampaigns) {
+    //   this.store.getLeads()
+    // } else {
+    //   this.store.getCampaigns()
+    //   this.store.getCurrentCampaign(this.$route.params.id)
+    //   this.store.getLeads()
+    // }
     this.getLeads()
   },
   methods: {

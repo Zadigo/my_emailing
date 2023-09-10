@@ -5,15 +5,18 @@
         <li v-for="tab in tabs" :key="tab.name" class="nav-item">
           <router-link :to="{ name: tab.name }" :class="{ active: tab.name === $route.name }" class="nav-link" :aria-current="{ page: tab.name === $route.name }">
             {{ tab.title }}
+            <span v-show="tab.name === 'leads_view'" class="badge text-bg-secondary ms-2">
+              {{ campaign.number_of_leads }}
+            </span>
             <span v-show="tab.name === 'review_view'" class="badge text-bg-secondary ms-2">
-              {{ unreviewedLeadsCount }}
+              {{ campaign.unreviewed_leads }}
             </span>
           </router-link>
         </li>
 
         <li class="nav-item">
-          <router-link :to="{ name: 'settings_view' }" :class="{ active: $route.name === 'settings_view' }" class="nav-link" :aria-current="{ page: $route.name === 'home_view' }">
-            <font-awesome-icon :icon="['fas', 'gear']" class="me-2 fa-1x" />
+          <router-link :to="{ name: 'settings_view' }" :class="{ active: $route.name === 'settings_view' }" class="nav-link" :aria-current="{ page: $route.name === 'settings_view' }">
+            <font-awesome-icon :icon="['fas', 'gear']" class="me-2 fa-1x" /> Settings
           </router-link>
         </li>
       </ul>
@@ -49,7 +52,10 @@ export default {
     }
   },
  computed: {
-    ...mapState(useCampaigns, { sequences: 'currentCampaignSequences' }),
+    ...mapState(useCampaigns, { 
+      campaign: 'currentCampaign',
+      sequences: 'currentCampaignSequences'
+    }),
     ...mapState(useCampaigns, ['hasCurrentCampaign', 'unreviewedLeadsCount']),
   },
   beforeMount () {

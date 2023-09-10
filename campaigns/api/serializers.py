@@ -77,9 +77,12 @@ class CampaignSerializer(Serializer):
     number_of_leads = fields.IntegerField()
     sequence_set = SequenceSerializer(many=True)
     schedule_set = ScheduleSerializer(many=True)
+    active = fields.BooleanField()
+    archived = fields.BooleanField()
+    unreviewed_leads = fields.IntegerField()
+    get_vue_absolute_url = fields.CharField()
     modified_on = fields.DateTimeField()
     created_on = fields.DateTimeField()
-    get_vue_absolute_url = fields.CharField()
 
     def all(self):
         queryset = Campaign.objects.all()
@@ -91,15 +94,14 @@ class SingleCampaignSerializer(Serializer):
     id = fields.IntegerField()
     campaign_id = fields.CharField()
     name = fields.CharField()
-    # lead_set = LeadSerializer(many=True)
     number_of_leads = fields.IntegerField()
-    modified_on = fields.DateTimeField()
-    created_on = fields.DateTimeField()
     sequence_set = SequenceSerializer(many=True)
     start_date = fields.DateTimeField()
     active = fields.BooleanField()
     archived = fields.BooleanField()
     get_vue_absolute_url = fields.CharField()
+    modified_on = fields.DateTimeField()
+    created_on = fields.DateTimeField()
 
     def get_campaign(self, campaign_id):
         try:

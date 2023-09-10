@@ -3,9 +3,9 @@ import redis
 from django.core.validators import FileExtensionValidator
 from django.utils.crypto import get_random_string
 from rest_framework.decorators import api_view
-from rest_framework.exceptions import NotAcceptable
+from rest_framework.exceptions import NotAcceptable, NotFound
 from rest_framework.response import Response
-
+import json
 from campaigns import models
 from campaigns.api import connections
 from campaigns.api import serializers
@@ -24,6 +24,22 @@ def campaign_view(request, campaign_id, **kwargs):
     serializer = serializers.SingleCampaignSerializer()
     return serializer.get_campaign(campaign_id)
 
+
+def active_campaign_view(request, campaign_id):
+    # instance = connections.get_redis_connection()
+    try:
+        campaign = models.Campaign.objects.get(campaign_id=campaign_id)
+    except:
+        raise NotFound(message='Campaign does not exist')
+    else:
+        campaign.active = False if campaign.active else True
+        campaign.save()
+
+        # schedules = campaign.schedule_set.values()
+        # schedules = json.dumps(schedules)
+        
+        # instance.hset(campaign_id, 'active', campaign.active)
+        # instance.hset(campaign_id, 'schedules', schedules)
 
 @api_view(http_method_names=['post'])
 def create_campaign_view(request, **kwargs):

@@ -48,3 +48,14 @@ CLOCKS = [
     "23:30",
     "23:59"
 ]
+
+
+DAYS = [
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday'
+    'Saturday'
+    'Sunday'
+]

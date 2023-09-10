@@ -1,3 +1,4 @@
+import calendar
 import datetime
 import time
 
@@ -7,8 +8,9 @@ from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.crypto import get_random_string
+from django.utils.functional import cached_property
 
-from campaigns import validators, algorithms
+from campaigns import algorithms, validators, constants
 from campaigns.choices import TimeZoneChoices
 
 
@@ -49,6 +51,53 @@ class Schedule(models.Model):
     @property
     def get_schedule_timezone(self):
         return pytz.timezone(self.schedule_timezone)
+
+    @property
+    def can_be_sent(self):
+        truth_array = []
+        d = datetime.datetime.now(tz=self.schedule_timezone)
+        time1 = datetime.datetime.combine(d.date(), d.time())
+        time2 = datetime.datetime.combine(d.date(), self.end_time_at.time())
+        remaining_time = (time2 - time1).total_seconds()
+        if remaining_time <= 0:
+            truth_array.append(False)
+        else:
+            truth_array.append(True)
+
+        weekday = d.today().weekday()
+        current_day = constants.DAYS[weekday]
+        _, days = self.list_of_sending_days
+        if current_day in days:
+            truth_array.append(True)
+        else:
+            truth_array.append(False)
+            
+        return all(truth_array)
+
+
+    @cached_property
+    def list_of_sending_days(self):
+        days = []
+        for day, state in self.sending_days.items():
+            if state:
+                days.append(day)
+        return len(days), days
+    
+    @cached_property
+    def provisional_days_to_end(self):
+        # Using the number of leads and the timespan
+        # of days in which email will be sent, calculate
+        # the number of days it would take to reach
+        # each lead
+        number_of_days, _ = self.list_of_sending_days
+        if number_of_days == 0:
+            return 0
+        return int(round(self.campaign.number_of_leads / number_of_days, 0))
+    
+    @cached_property
+    def provisional_end_date(self):
+        number_of_days, _ = self.list_of_sending_days
+        return datetime.timedelta(days=number_of_days) + self.campaign.start_date
 
 
 class Sequence(models.Model):
@@ -171,6 +220,10 @@ class Campaign(models.Model):
     @property
     def number_of_leads(self):
         return self.lead_set.count()
+
+    @property
+    def unreviewed_leads(self):
+        return self.lead_set.filter(reviewed=False).count()
 
     def clean(self):
         if self.active:
