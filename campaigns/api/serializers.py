@@ -16,6 +16,7 @@ class ScheduleSerializer(Serializer):
     start_time_at = fields.TimeField()
     end_time_at = fields.TimeField()
     interval = fields.IntegerField()
+    list_of_sending_days = fields.ListField()
     sending_days = fields.JSONField()
     modified_on = fields.DateTimeField()
     created_on = fields.DateTimeField()

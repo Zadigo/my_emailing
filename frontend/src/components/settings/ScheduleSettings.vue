@@ -42,10 +42,15 @@
 
       <!-- Schedules -->
       <div v-else class="schedules">
-        <div v-for="schedule in currentCampaign.schedule_set" :key="schedule.schedule_id" class="rounded-3 bg-light p-3">
-          <p class="fw-bold">Séquençage light</p>
-          <div class="schedule d-flex justify-content-around align-items-centers gap-2">
-            <span class="d-block text-center">5 days</span>
+        <div v-for="(schedule, i) in currentCampaign.schedule_set" :key="schedule.schedule_id" class="rounded-3 bg-light p-3">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <p class="fw-bold m-0">{{ schedule.name || 'Unnamed schedule' }}</p>
+            <base-button :id="`cta-schedule-action-${i}`" color="light" floating>
+              <font-awesome-icon :icon="['fas', 'ellipsis-vertical']" />
+            </base-button>
+          </div>
+          <div class="schedule d-flex justify-content-around align-items-centers gap-2 text-body-tertiary">
+            <span class="d-block text-center">{{ schedule.list_of_sending_days[0] }}/7 days</span>
             <span class="d-block text-center">Start at {{ schedule.start_time_at }}</span>
             <span class="d-block text-center">End at {{ schedule.end_time_at }}</span>
             <span class="d-block text-center">Send every {{ schedule.interval }} minutes</span>
