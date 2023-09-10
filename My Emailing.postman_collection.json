@@ -1,0 +1,446 @@
+{
+	"info": {
+		"_postman_id": "e34b1a50-5485-46a3-8878-2cb2ced78c69",
+		"name": "My Emailing",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "8871030"
+	},
+	"item": [
+		{
+			"name": "Campaigns",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('get campaigns', () => {\r",
+							"    const data = pm.response.json()\r",
+							"    // Math.random()\r",
+							"    pm.environment.set('campaign_id', data[0].campaign_id)\r",
+							"    pm.response.to.be.ok\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{api_url}}campaigns",
+					"host": [
+						"{{api_url}}campaigns"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Campaign",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('get campaign', () => {\r",
+							"    pm.response.to.have.jsonBody('id')\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{api_url}}campaigns/{{campaign_id}}",
+					"host": [
+						"{{api_url}}campaigns"
+					],
+					"path": [
+						"{{campaign_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Schedule",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('get campaign', () => {\r",
+							"    pm.response.to.have.jsonBody('id')\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"start_time_at\": \"12:00\",\r\n    \"end_time_at\": \"23:59\",\r\n    \"interval\": 5,\r\n    \"sending_days\": {}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api_url}}campaigns/{{campaign_id}}/schedule",
+					"host": [
+						"{{api_url}}campaigns"
+					],
+					"path": [
+						"{{campaign_id}}",
+						"schedule"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "New campaign",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{api_url}}campaigns/new",
+					"host": [
+						"{{api_url}}campaigns"
+					],
+					"path": [
+						"new"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update campaign",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "SIEC",
+							"type": "text"
+						},
+						{
+							"key": "sender",
+							"value": "",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "campaign_timezone",
+							"value": "America/Chicago",
+							"type": "text"
+						},
+						{
+							"key": "debut_sending_time",
+							"value": "",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "end_sending_time",
+							"value": "",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "archived",
+							"value": "false",
+							"type": "text"
+						},
+						{
+							"key": "active",
+							"value": "false",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{api_url}}campaigns/{{campaign_id}}/update",
+					"host": [
+						"{{api_url}}campaigns"
+					],
+					"path": [
+						"{{campaign_id}}",
+						"update"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete campaign",
+			"request": {
+				"method": "DEL",
+				"header": [],
+				"url": {
+					"raw": "{{api_url}}/campaigns/{{campaign_id}}/delete",
+					"host": [
+						"{{api_url}}"
+					],
+					"path": [
+						"campaigns",
+						"{{campaign_id}}",
+						"delete"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Leads",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('get leads for campaign', () => {\r",
+							"    const data = pm.response.json()\r",
+							"    const lead = data[Math.floor(Math.random() * (data.length + 1))]\r",
+							"    pm.environment.set('lead_id', lead.id)\r",
+							"\r",
+							"    // Simulate reviewing leads\r",
+							"    const leadsToReview = []\r",
+							"    for (let i = 0; i < 3; i++) {\r",
+							"        const randomLead = data[Math.floor(Math.random() * (data.length + 1))]\r",
+							"        leadsToReview.push(randomLead.id)\r",
+							"    }\r",
+							"    pm.environment.set('lead_to_review', leadsToReview.join(','))\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{api_url}}campaigns/{{campaign_id}}/leads",
+					"host": [
+						"{{api_url}}campaigns"
+					],
+					"path": [
+						"{{campaign_id}}",
+						"leads"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Lead",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{api_url}}campaigns/{{campaign_id}}/leads/{{lead_id}}",
+					"host": [
+						"{{api_url}}campaigns"
+					],
+					"path": [
+						"{{campaign_id}}",
+						"leads",
+						"{{lead_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create lead",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "email",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "csv_file",
+							"type": "file",
+							"src": "/E:/mywebsites/my_emailing/campaigns/fixtures/emails.csv"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{api_url}}campaigns/{{campaign_id}}/leads/create",
+					"host": [
+						"{{api_url}}campaigns"
+					],
+					"path": [
+						"{{campaign_id}}",
+						"leads",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update lead",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{api_url}}campaigns/{{campaign_id}}/leads/{{lead_id}}/update",
+					"host": [
+						"{{api_url}}campaigns"
+					],
+					"path": [
+						"{{campaign_id}}",
+						"leads",
+						"{{lead_id}}",
+						"update"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Review",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "leads",
+							"value": "{{lead_to_review}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{api_url}}campaigns/{{campaign_id}}/leads/review",
+					"host": [
+						"{{api_url}}campaigns"
+					],
+					"path": [
+						"{{campaign_id}}",
+						"leads",
+						"review"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete lead",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{api_url}}campaigns/{{campaign_id}}/leads/{{lead_id}}/delete",
+					"host": [
+						"{{api_url}}campaigns"
+					],
+					"path": [
+						"{{campaign_id}}",
+						"leads",
+						"{{lead_id}}",
+						"delete"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Sequence",
+			"request": {
+				"method": "DEL",
+				"header": [],
+				"url": {
+					"raw": "{{api_url}}campaigns/{{campaign_id}}/sequences/{{sequence_id}}/delete",
+					"host": [
+						"{{api_url}}campaigns"
+					],
+					"path": [
+						"{{campaign_id}}",
+						"sequences",
+						"{{sequence_id}}",
+						"delete"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update sequence",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{api_url}}/campaigns/{{campaign_id}}//sequences/{{sequence_id}}/delete",
+					"host": [
+						"{{api_url}}"
+					],
+					"path": [
+						"campaigns",
+						"{{campaign_id}}",
+						"",
+						"sequences",
+						"{{sequence_id}}",
+						"delete"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"pm.test('set authorization token', () => {",
+					"    const token = pm.environment.get('authenticationToken')",
+					"",
+					"    if (token && token !== \"null\") {",
+					"        pm.request.headers.add({",
+					"            key: 'Authorization',",
+					"            value: `Token ${token}`",
+					"        }) ",
+					"    }",
+					"",
+					"    pm.request.headers.add({",
+					"        key: 'Content-Type',",
+					"        value: 'application/json'",
+					"    })",
+					"})"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

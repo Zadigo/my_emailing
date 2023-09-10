@@ -12,8 +12,16 @@ urlpatterns = [
         views.create_lead_view
     ),
     re_path(
+        r'^(?P<campaign_id>camp\_[a-zA-Z0-9]+)/leads/review$',
+        views.review_leads_view
+    ),
+    re_path(
         r'^(?P<campaign_id>camp\_[a-zA-Z0-9]+)/leads$',
         views.leads_view
+    ),
+    re_path(
+        r'^(?P<campaign_id>camp\_[a-zA-Z0-9]+)/schedule$',
+        views.create_schedule_view
     ),
     re_path(
         r'^(?P<campaign_id>camp\_[a-zA-Z0-9]+)/update$',

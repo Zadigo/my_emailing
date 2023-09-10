@@ -84,9 +84,24 @@ def create_lead_view(request, campaign_id, **kwargs):
 
 
 @api_view(http_method_names=['post'])
+def review_leads_view(request, campaign_id, **kwargs):
+    serializer = serializers.ValidateReviewLeadsSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    return serializer.save(campaign_id)
+
+
+@api_view(http_method_names=['post'])
 def create_lead_view(request, campaign_id, lead_id, **kwargs):
     """Adds new leads to campaign either by sending an email
     or by using a file containing a list of emails"""
     serializer = serializers.ValidateUpdateLeadSerializer(data=request.POST)
     serializer.is_valid(raise_exception=True)
     return serializer
+
+
+@api_view(http_method_names=['post'])
+def create_schedule_view(request, campaign_id, **kwargs):
+    """Adds new schedule to campaign"""
+    serializer = serializers.ValidateScheduleSerializer(data=request.POST)
+    serializer.is_valid(raise_exception=True)
+    return serializer.save(campaign_id)

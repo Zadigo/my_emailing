@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from campaigns.models import Campaign, Lead, Sequence
+from campaigns.models import Campaign, Lead, Sequence, Schedule
 
 
 class CampaignAdmin(admin.ModelAdmin):
@@ -18,6 +18,13 @@ class LeadAdmin(admin.ModelAdmin):
     list_per_page = 10
 
 
+class ScheduleAdmin(admin.ModelAdmin):
+    list_display = ['campaign', 'name', 'start_time_at', 'end_time_at']
+    date_hierarchy = 'created_on'
+    list_per_page = 10
+
+
 admin.site.register(Campaign, CampaignAdmin)
 admin.site.register(Sequence, SequenceAdmin)
 admin.site.register(Lead, LeadAdmin)
+admin.site.register(Schedule, ScheduleAdmin)

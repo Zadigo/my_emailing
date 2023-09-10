@@ -1,13 +1,38 @@
 import datetime
-
+import time
 import pytz
 from django.db import models
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.crypto import get_random_string
+
 from campaigns import validators
 from campaigns.choices import TimeZoneChoices
+
+
+class Schedule(models.Model):
+    campaign = models.ForeignKey('Campaign', models.CASCADE)
+    name = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True
+    )
+    schedule_id = models.CharField(
+        max_length=50,
+        validators=[validators.custom_id_validator],
+        blank=True,
+        null=True
+    )
+    start_time_at = models.TimeField(default=datetime.time(12, 00))
+    end_time_at = models.TimeField(default=datetime.time(23, 59))
+    interval = models.PositiveIntegerField(default=1)
+    sending_days = models.JSONField()
+    modified_on = models.DateTimeField(auto_now=True)
+    created_on = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'Schedule for {self.campaign}'
 
 
 class Sequence(models.Model):
@@ -114,8 +139,6 @@ class Campaign(models.Model):
         default=TimeZoneChoices.choice(),
         choices=TimeZoneChoices.choices()
     )
-    debut_sending_time = None
-    end_sending_time = None
     start_date = models.DateTimeField(default=timezone.now)
     archived = models.BooleanField(default=False)
     active = models.BooleanField(default=False)
@@ -155,4 +178,12 @@ def create_sequence_id(instance, **kwargs):
     if instance.sequence_id is None:
         secret = get_random_string(length=8)
         instance.sequence_id = f'seq_{secret}'
+        instance.save()
+
+
+@receiver(pre_save, sender=Schedule)
+def create_schedule_id(instance, **kwargs):
+    if instance.schedule_id is None:
+        secret = get_random_string(length=8)
+        instance.schedule_id = f'sche_{secret}'
         instance.save()

@@ -14,9 +14,11 @@ const useCampaigns = defineStore('campaigns', {
       return this.currentCampaign.sequence_set || []
     },
     unreviewedLeads () {
+      // Leads that have not yet been reviewed to be sent
       return _.filter(this.currentCampaignLeads, ['reviewed', false])
     },
     unreviewedLeadsCount () {
+      // Count of the leads that have not yet been reviewed to be sent
       return this.unreviewedLeads.length
     },
     hasCampaigns () {

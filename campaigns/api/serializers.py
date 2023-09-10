@@ -1,3 +1,4 @@
+import datetime
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from rest_framework import fields
@@ -7,6 +8,17 @@ from rest_framework.serializers import Serializer
 
 from campaigns.choices import TimeZoneChoices
 from campaigns.models import Campaign, Lead
+
+
+class ScheduleSerializer(Serializer):
+    id = fields.IntegerField()
+    schedule_id = fields.CharField()
+    start_time_at = fields.TimeField()
+    end_time_at = fields.TimeField()
+    interval = fields.IntegerField()
+    sending_days = fields.JSONField()
+    modified_on = fields.DateTimeField()
+    created_on = fields.DateTimeField()
 
 
 class SequenceSerializer(Serializer):
@@ -64,6 +76,7 @@ class CampaignSerializer(Serializer):
     name = fields.CharField()
     number_of_leads = fields.IntegerField()
     sequence_set = SequenceSerializer(many=True)
+    schedule_set = ScheduleSerializer(many=True)
     modified_on = fields.DateTimeField()
     created_on = fields.DateTimeField()
     get_vue_absolute_url = fields.CharField()
@@ -139,3 +152,38 @@ class ValidateUpdateLeadSerializer(Serializer):
     email = fields.EmailField()
     reviewed = fields.BooleanField(default=False)
     extra_fields = fields.JSONField()
+
+
+class ValidateReviewLeadsSerializer(Serializer):
+    leads = fields.CharField()
+
+    def save(self, campaign_id):
+        lead_ids = self.validated_data.get('leads')
+        lead_ids = lead_ids.split(',')
+        leads = Lead.objects.filter(
+            id__in=lead_ids,
+            campaign__campaign_id=campaign_id
+        )
+        if leads.exists():
+            leads.update(reviewed=True)
+        serializer = LeadSerializer(instance=leads, many=True)
+        return Response(serializer.data)
+
+
+class ValidateScheduleSerializer(Serializer):
+    name = fields.CharField(max_length=100)
+    start_time_at = fields.TimeField(default=datetime.time(12, 00))
+    end_time_at = fields.TimeField(default=datetime.time(23, 59))
+    interval = fields.IntegerField(default=1)
+    sending_days = fields.JSONField()
+
+    def save(self, campaign_id):
+        try:
+            campaign = Campaign.objects.get(campaign_id=campaign_id)
+        except:
+            raise NotFound(detail='Campaign not found')
+        else:
+            schedule = campaign.schedule_set.create(**self.validated_data)
+            schedules = campaign.schedule_set.all()
+            serializer = ScheduleSerializer(instance=schedules, many=True)
+            return Response(serializer.data)

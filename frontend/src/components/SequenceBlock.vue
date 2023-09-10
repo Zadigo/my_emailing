@@ -1,9 +1,9 @@
 <template>
   <div id="sequence-block">
-    <base-card v-if="showExplicitResult" id="date" class="shadow-sm">
+    <base-card v-if="showExplicitResult" id="date" class="shadow-sm" @click="$emit('expand-preview', sequence)">
       <template #body>
-        <p>Object: {{ sequence.email_object }}</p>
-        <p>Text: {{ sequence.email_text }}</p>
+        <p><span class="badge text-bg-light">Object:</span> {{ replacePlaceholders(sequence.email_object, previewedLead) }}</p>
+        <p><span class="badge text-bg-light">Text:</span> {{ replacePlaceholders(sequence.email_text, previewedLead) }}</p>
       </template>
     </base-card>
 
@@ -24,6 +24,7 @@
 
 <script>
 import { getCurrentInstance, provide } from 'vue'
+import { useEmailUtilities } from '../composables/emailing'
 
 import BaseCard from '@/layouts/bootstrap/cards/BaseCard.vue'
 import DateSequence from './DateSequence.vue'
@@ -35,7 +36,7 @@ export default {
     DateSequence,
     EmailSequence
   },
-  inject: ['previewEmail', 'previewForLead'],
+  inject: ['previewEmail'],
   props: {
     sequence: {
       type: Object,
@@ -43,26 +44,25 @@ export default {
     },
     showExplicitResult: {
       type: Boolean
+    },
+    previewedLead: {
+      type: Object,
+      required: false
+    }
+  },
+  emits: {
+    'expand-preview' () {
+      return true
     }
   },
   setup () {
     const app = getCurrentInstance()
+    const { replacePlaceholders } = useEmailUtilities()
     provide('showExplicitResult', app.props.showExplicitResult)
-
-    return {}
-  },
-  computed: {
-    previewedEmailObject () {
-      if (this.previewEmail) {
-        const variableRegex = new RegExp(/\[\[\s?(\w+)\s?\]\]/g)
-        const result = variableRegex.exec(this.sequence.email_object)
-        const newString = this.sequence.email_object
-        newString.replace(result[0], this.previewForLead[result[1]])
-        return newString
-      } else {
-        return this.sequence.email_object
-      }
+    
+    return {
+      replacePlaceholders
     }
-  },
+  }
 }
 </script>

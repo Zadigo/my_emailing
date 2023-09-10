@@ -5,10 +5,10 @@
       <hr class="mb-3">
 
       <p class="fw-bold mb-1">Stop the campaign for people that</p>
-      <base-list-group-checkbox :items="[{ name: 'a' }, { name: 'b' }]" />
+      <base-list-group-checkbox id="actions" :items="[{ name: 'a' }, { name: 'b' }]" />
 
       <p class="fw-bold mt-4 mb-1">Create a new task when people</p>
-      <base-list-group-checkbox :items="[{ name: 'a' }, { name: 'b' }]" />
+      <base-list-group-checkbox id="tasks" :items="[{ name: 'a' }, { name: 'b' }]" />
     </div>
   </div>
 </template>

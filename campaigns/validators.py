@@ -14,5 +14,5 @@ def waiting_days_validator(value):
 
 
 def custom_id_validator(value):
-    validator = RegexValidator(r'^(camp|lead|seq)\_[a-zA-Z0-9]+$')
+    validator = RegexValidator(r'^(camp|lead|seq|sche)\_[a-zA-Z0-9]+$')
     validator(value)
