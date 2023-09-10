@@ -1,5 +1,6 @@
 import datetime
 import time
+
 import pytz
 from django.db import models
 from django.db.models.signals import post_save, pre_save
@@ -7,7 +8,7 @@ from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.crypto import get_random_string
 
-from campaigns import validators
+from campaigns import validators, algorithms
 from campaigns.choices import TimeZoneChoices
 
 
@@ -24,6 +25,17 @@ class Schedule(models.Model):
         blank=True,
         null=True
     )
+    schedule_timezone = models.CharField(
+        max_length=100,
+        choices=TimeZoneChoices.choices(),
+        default=TimeZoneChoices.choice('UTC')
+    )
+    provisional_sending_dates = models.CharField(
+        max_length=20000,
+        validators=[validators.validate_comma_separated_char_list],
+        blank=True,
+        null=True
+    )
     start_time_at = models.TimeField(default=datetime.time(12, 00))
     end_time_at = models.TimeField(default=datetime.time(23, 59))
     interval = models.PositiveIntegerField(default=1)
@@ -33,6 +45,10 @@ class Schedule(models.Model):
 
     def __str__(self):
         return f'Schedule for {self.campaign}'
+
+    @property
+    def get_schedule_timezone(self):
+        return pytz.timezone(self.schedule_timezone)
 
 
 class Sequence(models.Model):
@@ -187,3 +203,11 @@ def create_schedule_id(instance, **kwargs):
         secret = get_random_string(length=8)
         instance.schedule_id = f'sche_{secret}'
         instance.save()
+
+
+@receiver(pre_save, sender=Schedule)
+def calculate_sending_calendar(instance, **kwargs):
+    calculator = algorithms.CalendarCalculator(instance)
+    if calculator.comma_separated_calendar:
+        instance.provisional_sending_dates = None
+        instance.provisional_sending_dates = calculator.comma_separated_calendar
